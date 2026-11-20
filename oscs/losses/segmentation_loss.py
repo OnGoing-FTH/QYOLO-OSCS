@@ -38,3 +38,18 @@ class SegmentationLoss(nn.Module):
         denominator = probabilities.sum(dim=(-2, -1)) + target_masks.sum(dim=(-2, -1))
         dice = (1.0 - ((2.0 * intersection + 1.0) / (denominator + 1.0))).mean()
         return {"mask": mask * self.mask_weight, "dice": dice * self.dice_weight}
+
+
+if __name__ == "__main__":
+    import torch
+
+    from oscs.models import YOLOOpenSetColdStartSegmentation
+
+    model = YOLOOpenSetColdStartSegmentation(num_classes=3, width=16)
+    outputs = model(torch.randn(1, 3, 128, 128))
+    targets = BatchTargets(
+        labels=torch.tensor([[0, 1, -1]]),
+        boxes=torch.rand(1, 3, 4),
+        masks=torch.randint(0, 2, (1, 3, 128, 128)),
+    )
+    print({name: float(value.detach()) for name, value in SegmentationLoss()(outputs, targets).items()})

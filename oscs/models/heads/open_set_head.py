@@ -15,3 +15,11 @@ class OpenSetHead(nn.Module):
         knownness_logits = self.knownness(features).flatten(2).squeeze(1)
         embeddings = self.embedding(features).flatten(2).transpose(1, 2)
         return knownness_logits, embeddings
+
+
+if __name__ == "__main__":
+    import torch
+
+    head = OpenSetHead(in_channels=32, embedding_dim=128)
+    knownness_logits, embeddings = head(torch.randn(1, 32, 8, 8))
+    print({"knownness_logits": tuple(knownness_logits.shape), "embeddings": tuple(embeddings.shape)})

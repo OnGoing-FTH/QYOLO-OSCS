@@ -39,3 +39,11 @@ def nn_concat(left: Tensor, right: Tensor) -> Tensor:
     import torch
 
     return torch.cat((left, right), dim=1)
+
+
+if __name__ == "__main__":
+    import torch
+
+    neck = PANNeck(channels=(64, 128, 128))
+    outputs = neck((torch.randn(1, 64, 8, 8), torch.randn(1, 128, 4, 4), torch.randn(1, 128, 2, 2)))
+    print({f"p{index + 3}": tuple(feature.shape) for index, feature in enumerate(outputs)})

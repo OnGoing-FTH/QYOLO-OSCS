@@ -5,6 +5,8 @@ model:
   depth: 1
   mask_prototypes: 32
   embedding_dim: 128
+  use_pixel_unshuffle_stem: true
+  pixel_unshuffle_factor: 4
 
 loss:
   classification_weight: 1.0

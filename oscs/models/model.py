@@ -26,9 +26,17 @@ class YOLOOpenSetColdStartSegmentation(nn.Module):
         depth: int = 1,
         mask_prototypes: int = 32,
         embedding_dim: int = 128,
+        use_pixel_unshuffle_stem: bool = True,
+        pixel_unshuffle_factor: int = 4,
     ) -> None:
         super().__init__()
-        self.backbone = YOLOv11Backbone(in_channels=in_channels, width=width, depth=depth)
+        self.backbone = YOLOv11Backbone(
+            in_channels=in_channels,
+            width=width,
+            depth=depth,
+            use_pixel_unshuffle_stem=use_pixel_unshuffle_stem,
+            pixel_unshuffle_factor=pixel_unshuffle_factor,
+        )
         self.neck = PANNeck(self.backbone.channels, depth=depth)
         feature_channels = self.neck.channels[0]
         self.detection_head = DetectionHead(feature_channels, num_classes)
@@ -50,3 +58,11 @@ class YOLOOpenSetColdStartSegmentation(nn.Module):
             knownness_logits=knownness_logits,
             embeddings=embeddings,
         )
+
+
+if __name__ == "__main__":
+    import torch
+
+    model = YOLOOpenSetColdStartSegmentation(num_classes=3, width=16)
+    outputs = model(torch.randn(1, 3, 128, 128))
+    print({name: tuple(getattr(outputs, name).shape) for name in outputs.__dataclass_fields__})

@@ -42,3 +42,18 @@ def _matched_targets(outputs: ModelOutput, targets: BatchTargets) -> tuple[Tenso
     boxes = targets.boxes[:, :query_count]
     valid = labels.ge(0)
     return labels, boxes, valid
+
+
+if __name__ == "__main__":
+    import torch
+
+    from oscs.models import YOLOOpenSetColdStartSegmentation
+
+    model = YOLOOpenSetColdStartSegmentation(num_classes=3, width=16)
+    outputs = model(torch.randn(1, 3, 128, 128))
+    targets = BatchTargets(
+        labels=torch.tensor([[0, 1, -1]]),
+        boxes=torch.rand(1, 3, 4),
+        masks=torch.randint(0, 2, (1, 3, 128, 128)),
+    )
+    print({name: float(value.detach()) for name, value in DetectionLoss()(outputs, targets).items()})

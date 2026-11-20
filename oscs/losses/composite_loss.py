@@ -32,3 +32,19 @@ class CompositeLoss(nn.Module):
         components.update(self.open_set(outputs, targets))
         total = sum(components.values())
         return LossOutput(total=total, components=components)
+
+
+if __name__ == "__main__":
+    import torch
+
+    from oscs.models import YOLOOpenSetColdStartSegmentation
+
+    model = YOLOOpenSetColdStartSegmentation(num_classes=3, width=16)
+    outputs = model(torch.randn(1, 3, 128, 128))
+    targets = BatchTargets(
+        labels=torch.tensor([[0, 1, -1]]),
+        boxes=torch.rand(1, 3, 4),
+        masks=torch.randint(0, 2, (1, 3, 128, 128)),
+    )
+    loss_output = CompositeLoss()(outputs, targets)
+    print({"total": float(loss_output.total.detach()), **{name: float(value.detach()) for name, value in loss_output.components.items()}})

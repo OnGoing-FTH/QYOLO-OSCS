@@ -21,3 +21,15 @@ class SegmentationHead(nn.Module):
         coefficients = self.coefficients(features).flatten(2).transpose(1, 2)
         instance_masks = torch.einsum("bqn,bnhw->bqhw", coefficients, prototypes)
         return coefficients, prototypes, instance_masks
+
+
+if __name__ == "__main__":
+    head = SegmentationHead(in_channels=32, num_prototypes=16)
+    coefficients, prototypes, instance_masks = head(torch.randn(1, 32, 8, 8))
+    print(
+        {
+            "coefficients": tuple(coefficients.shape),
+            "prototypes": tuple(prototypes.shape),
+            "instance_masks": tuple(instance_masks.shape),
+        }
+    )

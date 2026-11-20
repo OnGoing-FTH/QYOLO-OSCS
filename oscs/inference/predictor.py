@@ -37,3 +37,11 @@ class Predictor:
             masks=masks,
             knownness=knownness,
         )
+
+
+if __name__ == "__main__":
+    from oscs.models import YOLOOpenSetColdStartSegmentation
+
+    predictor = Predictor(YOLOOpenSetColdStartSegmentation(num_classes=3, width=16))
+    predictions = predictor(torch.randn(1, 3, 128, 128))
+    print({name: tuple(getattr(predictions, name).shape) for name in predictions.__dataclass_fields__})

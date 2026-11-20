@@ -21,6 +21,8 @@ tests/                    随机张量契约测试
 
 所有上游 YOLOv11 模块都集中在 `oscs/models/ultralytics_blocks.py`：`Conv`、`C3k2`、`SPPF` 与 `C2PSA`。其他本地模块不直接依赖 Ultralytics 内部导入路径，方便后续升级版本时集中处理兼容性。
 
+`oscs/models/components.py` 提供可独立优化的 `PixelUnshuffleStem`：`PixelUnshuffle(4) -> 1x1 Conv(C) -> BatchNorm2d -> 3x3 Conv(C/2)`。它通过 `use_pixel_unshuffle_stem` 和 `pixel_unshuffle_factor` 注入 backbone，默认启用。
+
 ## 运行
 
 在已安装 PyTorch、Ultralytics 和 PyYAML 的环境中执行：
