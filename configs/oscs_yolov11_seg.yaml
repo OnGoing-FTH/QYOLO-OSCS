@@ -1,0 +1,18 @@
+model:
+  num_classes: 3
+  in_channels: 3
+  width: 32
+  depth: 1
+  mask_prototypes: 32
+  embedding_dim: 128
+
+loss:
+  classification_weight: 1.0
+  box_weight: 5.0
+  mask_weight: 1.0
+  dice_weight: 1.0
+  open_set_weight: 0.5
+
+inference:
+  confidence_threshold: 0.25
+  top_k: 100
