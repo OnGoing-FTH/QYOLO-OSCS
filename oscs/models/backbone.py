@@ -25,10 +25,9 @@ class YOLOv11Backbone(nn.Module):
         if use_pixel_unshuffle_stem:
             self.stem = PixelUnshuffleStem(
                 in_channels=in_channels,
-                hidden_channels=c2 * 2,
                 downscale_factor=pixel_unshuffle_factor,
             )
-            stem_channels = self.stem.out_channels
+            stem_channels = in_channels * pixel_unshuffle_factor**2 // 4
         else:
             self.stem = Conv(in_channels, c2, 3, 2)
             stem_channels = c2

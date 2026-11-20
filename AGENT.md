@@ -93,6 +93,20 @@ Norm(C):              [B, C, H/r, W/r]
 - `forward_with_features()` 必须保留，并返回 `input`、`pixel_unshuffle`、`project`、`norm`、`output`，供结构调试和特征流检查使用。
 - 组件通过 `use_pixel_unshuffle_stem` 与 `pixel_unshuffle_factor` 接入 backbone，默认启用；关闭时应保持原始 stem 路径可用。
 
+## 多分辨率邻近扩展
+
+`oscs/models/multi_resolution.py` 负责将固定 RGB 输入尺度对齐到 `[B, 3, 640, 640]`，再进行自适应邻近融合。
+
+- 支持的原始输入分辨率仅为：`5120`、`2560`、`1280`、`640`，且均为 `[B, 3, H, W]`。
+- 禁止在该模块及其子组件中调用 `resize`、`interpolate`、池化 resize 或任何隐式尺度变换；尺寸准备属于数据加载/预处理层。
+- 5120 对齐路径固定为：`PixelUnshuffleStem(r=2) -> PixelUnshuffleStem(r=4) -> ChannelHalvingBlock(12->6) -> ChannelHalvingBlock(6->3)`。
+- 2560 对齐路径固定为：`PixelUnshuffleStem(r=2) -> PixelUnshuffleStem(r=2)`。
+- 1280 对齐路径固定为：`PixelUnshuffleStem(r=2)`。
+- 640 输入使用 `Identity` 路径。
+- 四条路径的输出都必须是 `[B, 3, 640, 640]`，才允许输入 `AdaptiveNeighborFusion`。
+- `AdaptiveNeighborFusion` 通过全局描述预测四个尺度的 softmax 权重，对齐特征加权求和后再做卷积细化。
+- 真实尺寸测试只要求覆盖 5120 分支，使用 `(1, 3, 5120, 5120)` 作为输入并开启 `torch.inference_mode()`。
+
 ## 特征流记录
 
 新增或修改会改变特征尺寸、通道数、分支合并方式的组件时：

@@ -1,3 +1,3 @@
-from .types import BatchTargets, LossOutput, ModelOutput, PredictionBatch
+from .types import BatchTargets, LossOutput, ModelOutput, MultiResolutionOutput, PredictionBatch
 
-__all__ = ["BatchTargets", "LossOutput", "ModelOutput", "PredictionBatch"]
+__all__ = ["BatchTargets", "LossOutput", "ModelOutput", "MultiResolutionOutput", "PredictionBatch"]

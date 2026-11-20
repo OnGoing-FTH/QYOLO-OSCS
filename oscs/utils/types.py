@@ -44,6 +44,15 @@ class LossOutput:
 
 
 @dataclass
+class MultiResolutionOutput:
+    """Aligned scale branches and their adaptive fused representation."""
+
+    aligned_features: Mapping[int, Tensor]
+    fusion_weights: Tensor
+    fused: Tensor
+
+
+@dataclass
 class PredictionBatch:
     scores: Tensor
     labels: Tensor

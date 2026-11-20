@@ -7,8 +7,16 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .components import ChannelHalvingBlock, PixelUnshuffleStem
     from .model import YOLOOpenSetColdStartSegmentation
+    from .multi_resolution import AdaptiveNeighborFusion, MultiResolutionNeighborAdapter, ResolutionAdapter
 
-__all__ = ["ChannelHalvingBlock", "PixelUnshuffleStem", "YOLOOpenSetColdStartSegmentation"]
+__all__ = [
+    "AdaptiveNeighborFusion",
+    "ChannelHalvingBlock",
+    "MultiResolutionNeighborAdapter",
+    "PixelUnshuffleStem",
+    "ResolutionAdapter",
+    "YOLOOpenSetColdStartSegmentation",
+]
 
 
 def __getattr__(name: str):
@@ -20,6 +28,18 @@ def __getattr__(name: str):
         from .components import PixelUnshuffleStem
 
         return PixelUnshuffleStem
+    if name == "ResolutionAdapter":
+        from .multi_resolution import ResolutionAdapter
+
+        return ResolutionAdapter
+    if name == "AdaptiveNeighborFusion":
+        from .multi_resolution import AdaptiveNeighborFusion
+
+        return AdaptiveNeighborFusion
+    if name == "MultiResolutionNeighborAdapter":
+        from .multi_resolution import MultiResolutionNeighborAdapter
+
+        return MultiResolutionNeighborAdapter
     if name == "YOLOOpenSetColdStartSegmentation":
         from .model import YOLOOpenSetColdStartSegmentation
 
